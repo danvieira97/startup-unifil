@@ -2,10 +2,18 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateRestaurantDTO } from './dtos/create-restaurant.dto';
 import { Restaurant } from './interfaces/restaurants.interface';
 import { RestaurantsService } from './restaurants.service';
+import { LoginRestaurantDTO } from './dtos/login-restaurant.dto';
 
 @Controller('restaurants')
 export class RestaurantsController {
   constructor(private readonly restaurantService: RestaurantsService) {}
+
+  @Post('loginRestaurant')
+  async loginRestaurant(
+    @Body() loginRestaurantDTO: LoginRestaurantDTORestaurantDTO,
+  ): Promise<Restaurant> {
+    return await this.restaurantService.loginRestaurant(loginRestaurantDTO);
+  }
 
   @Post('createRestaurant')
   async createRestaurant(

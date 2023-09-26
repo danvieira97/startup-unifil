@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateRestaurantDTO } from './dtos/create-restaurant.dto';
 import { Restaurant } from './interfaces/restaurants.interface';
+import { LoginRestaurantDTO } from './dtos/login-restaurant.dto';
 
 @Injectable()
 export class RestaurantsService {
@@ -31,5 +32,23 @@ export class RestaurantsService {
     await this.restaurantModel.findByIdAndUpdate(id, {
       availableTables: availableTables,
     });
+  }
+
+  async loginRestaurant(
+    loginRestaurantDTO: LoginRestaurantDTO,
+  ): Promise<Restaurant> {
+    const findRestaurant = await this.restaurantModel.findOne({
+      email: loginRestaurantDTO.email,
+    });
+
+    if (!findRestaurant) {
+      throw new BadRequestException('Email ou senha inválidos!');
+    }
+
+    if (findRestaurant.password !== loginRestaurantDTO.password) {
+      throw new BadRequestException('Email ou senha inválidos!');
+    }
+
+    return findRestaurant;
   }
 }
