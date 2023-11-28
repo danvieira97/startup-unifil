@@ -15,6 +15,22 @@ export class RestaurantsService {
   async createRestaurant(
     createRestaurantDTO: CreateRestaurantDTO,
   ): Promise<Restaurant> {
+    const { email } = createRestaurantDTO;
+
+    const findRestaurant = await this.restaurantModel.findOne({ email });
+    if (findRestaurant) {
+      throw new BadRequestException(
+        `Restaurante com o e-mail: ${email} já cadastrado`,
+      );
+    }
+
+    const { password, confirmPassword } = createRestaurantDTO;
+    if (password !== confirmPassword) {
+      throw new BadRequestException(
+        `A senha e confirmação de senha precisam ser iguais`,
+      );
+    }
+
     const createRestaurant = new this.restaurantModel(createRestaurantDTO);
     return await createRestaurant.save();
   }

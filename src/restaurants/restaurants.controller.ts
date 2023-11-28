@@ -10,7 +10,7 @@ export class RestaurantsController {
 
   @Post('loginRestaurant')
   async loginRestaurant(
-    @Body() loginRestaurantDTO: LoginRestaurantDTORestaurantDTO,
+    @Body() loginRestaurantDTO: LoginRestaurantDTO,
   ): Promise<Restaurant> {
     return await this.restaurantService.loginRestaurant(loginRestaurantDTO);
   }
