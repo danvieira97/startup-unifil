@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateRestaurantDTO } from './dtos/create-restaurant.dto';
 import { Restaurant } from './interfaces/restaurants.interface';
 import { LoginRestaurantDTO } from './dtos/login-restaurant.dto';
+import { UpdateRestaurantDTO } from './dtos/update-restaurant.dto';
 
 @Injectable()
 export class RestaurantsService {
@@ -66,5 +71,29 @@ export class RestaurantsService {
     }
 
     return findRestaurant;
+  }
+
+  async getRestaurantByID(id: string): Promise<Restaurant> {
+    const restaurant = await this.restaurantModel.findById(id);
+    if (!restaurant) {
+      throw new NotFoundException(`Cliente com o id: ${id} não encontrado`);
+    }
+
+    return restaurant;
+  }
+
+  async updateRestaurant(
+    id: string,
+    updateRestaurantDTO: UpdateRestaurantDTO,
+  ): Promise<Restaurant> {
+    const restaurant = await this.restaurantModel.findByIdAndUpdate(id, {
+      $set: updateRestaurantDTO,
+    });
+
+    if (!restaurant) {
+      throw new NotFoundException(`Cliente com o id: ${id} não encontrado`);
+    }
+
+    return restaurant;
   }
 }
